@@ -1,11 +1,15 @@
-let data = []
+let data = [];
+
 async function getdata() {
-    txt = await (await fetch("Apple_Financials.csv")).text()
-    data = txt.split("\n").map(d => d.split(/,\"\$|","\$/).map(s => s.replaceAll(",", ""))).slice(1).reverse()
-    console.log(data)
+    const response = await fetch("Apple_Financials.csv");
+    const txt = await response.text();
+    data = txt.split("\n").map(d => d.split(/,\"\$|","\$/).map(s => s.replaceAll(",", ""))).slice(1).reverse();
+    console.log(data);
+    return data;
 }
+
 getdata()
-    .then(() => {
+    .then(data => {
         new Chart(document.getElementById('myChart'), {
             type: 'line',
             data: {
@@ -31,7 +35,8 @@ getdata()
                     backgroundColor: "#ffffff",
                     borderColor: "#000000"
                 }]
-               
             }
         });
     })
+    .catch(error => console.error('Error fetching data:', error));
+
